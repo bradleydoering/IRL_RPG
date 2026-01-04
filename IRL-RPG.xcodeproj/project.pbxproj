@@ -29,6 +29,16 @@
 		B644D0942F0A100100635BC9 /* IRL-RPGUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "IRL-RPGUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		B644D0C72F0A124900635BC9 /* Exceptions for "src" folder in "IRL-RPGUITests" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Models.swift,
+			);
+			target = B644D0932F0A100100635BC9 /* IRL-RPGUITests */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		B644D07A2F0A0FFF00635BC9 /* IRL-RPG */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
@@ -43,6 +53,19 @@
 		B644D0972F0A100100635BC9 /* IRL-RPGUITests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = "IRL-RPGUITests";
+			sourceTree = "<group>";
+		};
+		B644D0C42F0A124900635BC9 /* doc */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = doc;
+			sourceTree = "<group>";
+		};
+		B644D0C62F0A124900635BC9 /* src */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				B644D0C72F0A124900635BC9 /* Exceptions for "src" folder in "IRL-RPGUITests" target */,
+			);
+			path = src;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -79,6 +102,8 @@
 				B644D08D2F0A100100635BC9 /* IRL-RPGTests */,
 				B644D0972F0A100100635BC9 /* IRL-RPGUITests */,
 				B644D0792F0A0FFF00635BC9 /* Products */,
+				B644D0C42F0A124900635BC9 /* doc */,
+				B644D0C62F0A124900635BC9 /* src */,
 			);
 			sourceTree = "<group>";
 		};
@@ -155,6 +180,7 @@
 			);
 			fileSystemSynchronizedGroups = (
 				B644D0972F0A100100635BC9 /* IRL-RPGUITests */,
+				B644D0C62F0A124900635BC9 /* src */,
 			);
 			name = "IRL-RPGUITests";
 			packageProductDependencies = (
