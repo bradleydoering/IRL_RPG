@@ -14,18 +14,7 @@ struct PersistenceController {
     static let preview: PersistenceController = {
         let result = PersistenceController(inMemory: true)
         let viewContext = result.container.viewContext
-        for _ in 0..<10 {
-            let newItem = Item(context: viewContext)
-            newItem.timestamp = Date()
-        }
-        do {
-            try viewContext.save()
-        } catch {
-            // Replace this implementation with code to handle the error appropriately.
-            // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-            let nsError = error as NSError
-            fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
-        }
+        result.seedSkillsIfNeeded(context: viewContext)
         return result
     }()
 
@@ -53,5 +42,34 @@ struct PersistenceController {
             }
         })
         container.viewContext.automaticallyMergesChangesFromParent = true
+    }
+
+    func seedSkillsIfNeeded(context: NSManagedObjectContext) {
+        let request = NSFetchRequest<Skill>(entityName: "Skill")
+        request.fetchLimit = 1
+
+        do {
+            let existing = try context.count(for: request)
+            if existing > 0 { return }
+
+            let now = Date()
+            for kind in SkillKind.allCases {
+                let skill = Skill(context: context)
+                skill.id = UUID()
+                skill.kindRaw = kind.rawValue
+                skill.categoryRaw = kind.category.rawValue
+                skill.xpTotal = 0
+                skill.currentStreakDays = 0
+                skill.longestStreakDays = 0
+                skill.lastTrainedAt = nil
+                skill.createdAt = now
+                skill.updatedAt = now
+            }
+
+            try context.save()
+        } catch {
+            let nsError = error as NSError
+            fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
+        }
     }
 }

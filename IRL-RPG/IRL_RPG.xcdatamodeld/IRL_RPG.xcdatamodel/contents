@@ -1,9 +1,41 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="1" systemVersion="11A491" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithCloudKit="false" userDefinedModelVersionIdentifier="">
-    <entity name="Item" representedClassName="Item" syncable="YES" codeGenerationType="class">
-        <attribute name="timestamp" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+    <entity name="Skill" representedClassName="Skill" syncable="YES" codeGenerationType="class">
+        <attribute name="categoryRaw" optional="NO" attributeType="String"/>
+        <attribute name="createdAt" optional="NO" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="currentStreakDays" optional="NO" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="id" optional="NO" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="kindRaw" optional="NO" attributeType="String"/>
+        <attribute name="lastTrainedAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="longestStreakDays" optional="NO" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="updatedAt" optional="NO" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="xpTotal" optional="NO" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+    </entity>
+    <entity name="SessionLogEntity" representedClassName="SessionLogEntity" syncable="YES" codeGenerationType="class">
+        <attribute name="baseXp" optional="NO" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="bonusXp" optional="NO" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="createdAt" optional="NO" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="durationSeconds" optional="NO" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="endAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="id" optional="NO" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="skillKindRaw" optional="NO" attributeType="String"/>
+        <attribute name="sourceRaw" optional="NO" attributeType="String"/>
+        <attribute name="startAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="streakMultiplier" optional="NO" attributeType="Double" defaultValueString="1" usesScalarValueType="YES"/>
+        <attribute name="totalXp" optional="NO" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="trainedDespiteResistance" optional="NO" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+    </entity>
+    <entity name="XpEventEntity" representedClassName="XpEventEntity" syncable="YES" codeGenerationType="class">
+        <attribute name="amount" optional="NO" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="at" optional="NO" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="id" optional="NO" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="note" optional="YES" attributeType="String"/>
+        <attribute name="skillKindRaw" optional="YES" attributeType="String"/>
+        <attribute name="typeRaw" optional="NO" attributeType="String"/>
     </entity>
     <elements>
-        <element name="Item" positionX="-63" positionY="-18" width="128" height="44"/>
+        <element name="Skill" positionX="-63" positionY="-18" width="128" height="164"/>
+        <element name="SessionLogEntity" positionX="160" positionY="-18" width="128" height="194"/>
+        <element name="XpEventEntity" positionX="383" positionY="-18" width="128" height="134"/>
     </elements>
 </model>

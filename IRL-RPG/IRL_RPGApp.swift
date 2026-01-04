@@ -11,6 +11,10 @@ import CoreData
 @main
 struct IRL_RPGApp: App {
     let persistenceController = PersistenceController.shared
+    
+    init() {
+        FontRegistrar.registerFont()
+    }
 
     var body: some Scene {
         WindowGroup {

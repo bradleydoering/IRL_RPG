@@ -134,6 +134,7 @@
 			);
 			fileSystemSynchronizedGroups = (
 				B644D07A2F0A0FFF00635BC9 /* IRL-RPG */,
+				B644D0C62F0A124900635BC9 /* src */,
 			);
 			name = "IRL-RPG";
 			packageProductDependencies = (
