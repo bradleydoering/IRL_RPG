@@ -14,8 +14,7 @@ import Foundation
 enum SkillCategory: String, Codable, CaseIterable {
     case mind
     case body
-    case craft
-    case art
+    case hobby
     case meta
 }
 
@@ -23,49 +22,50 @@ enum SkillKind: String, Codable, CaseIterable, Identifiable {
     // Mind
     case reading
     case writing
-    case learning
+    case research
     case deepWork
     case meditation
-    case creativity
 
     // Body
     case weightlifting
-    case running
+    case cardio
     case walking
-    case mobility
     case sleep
+    case yoga
+    case surfing
+    case basketball
+    case swimming
+    case sauna
+    case iceBaths
 
-    // Craft
+    // Hobby
     case woodworking
     case pottery
     case cooking
-    case diyHomeImprovement
-    case electronicsMaking
-
-    // Art
-    case drawingPainting
-    case musicPractice
-    case photographyVideo
+    case coding
+    case drawing
+    case painting
+    case music
+    case crafting
 
     // Meta
     case consistency
     case discipline
     case resilience
     case curiosity
+    case creativity
 
     var id: String { rawValue }
 
     var category: SkillCategory {
         switch self {
-        case .reading, .writing, .learning, .deepWork, .meditation, .creativity:
+        case .reading, .writing, .research, .deepWork, .meditation:
             return .mind
-        case .weightlifting, .running, .walking, .mobility, .sleep:
+        case .weightlifting, .cardio, .walking, .sleep, .yoga, .surfing, .basketball, .swimming, .sauna, .iceBaths:
             return .body
-        case .woodworking, .pottery, .cooking, .diyHomeImprovement, .electronicsMaking:
-            return .craft
-        case .drawingPainting, .musicPractice, .photographyVideo:
-            return .art
-        case .consistency, .discipline, .resilience, .curiosity:
+        case .woodworking, .pottery, .cooking, .coding, .drawing, .painting, .music, .crafting:
+            return .hobby
+        case .consistency, .discipline, .resilience, .curiosity, .creativity:
             return .meta
         }
     }
@@ -73,11 +73,7 @@ enum SkillKind: String, Codable, CaseIterable, Identifiable {
     var displayName: String {
         switch self {
         case .deepWork: return "Deep Work"
-        case .diyHomeImprovement: return "DIY / Home Improvement"
-        case .electronicsMaking: return "Electronics / Making"
-        case .drawingPainting: return "Drawing / Painting"
-        case .musicPractice: return "Music Practice"
-        case .photographyVideo: return "Photography / Video"
+        case .iceBaths: return "Ice Baths"
         default:
             return rawValue
                 .replacingOccurrences(of: "([a-z])([A-Z])", with: "$1 $2", options: .regularExpression)
@@ -88,7 +84,7 @@ enum SkillKind: String, Codable, CaseIterable, Identifiable {
     /// Whether the skill is primarily logged by minutes (timer) rather than discrete sessions.
     var isTimeBased: Bool {
         switch self {
-        case .weightlifting, .woodworking, .pottery, .cooking, .diyHomeImprovement, .electronicsMaking:
+        case .weightlifting, .woodworking, .pottery, .cooking, .crafting, .surfing, .basketball, .sauna, .iceBaths:
             return false // default session-based
         case .sleep:
             return true // passive minutes
@@ -103,14 +99,133 @@ enum SkillKind: String, Codable, CaseIterable, Identifiable {
     var defaultSessionXp: Int {
         switch self {
         case .weightlifting: return 400
+        case .surfing: return 450
+        case .basketball: return 400
+        case .sauna: return 300
+        case .iceBaths: return 300
         case .woodworking: return 400
         case .pottery: return 400
         case .cooking: return 350
-        case .diyHomeImprovement: return 450
-        case .electronicsMaking: return 450
+        case .crafting: return 350
         default:
             return 400
         }
+    }
+
+    var iconName: String {
+        switch self {
+        case .reading: return "book.closed"
+        case .writing: return "pencil.and.outline"
+        case .research: return "graduationcap"
+        case .deepWork: return "brain.head.profile"
+        case .meditation: return "sparkles"
+        case .weightlifting: return "dumbbell"
+        case .cardio: return "heart.fill"
+        case .walking: return "figure.walk"
+        case .sleep: return "bed.double"
+        case .yoga: return "figure.mind.and.body"
+        case .surfing: return "wave.3.right"
+        case .basketball: return "basketball"
+        case .swimming: return "drop"
+        case .sauna: return "flame"
+        case .iceBaths: return "snowflake"
+        case .woodworking: return "hammer"
+        case .pottery: return "circle.hexagongrid"
+        case .cooking: return "fork.knife"
+        case .coding: return "chevron.left.slash.chevron.right"
+        case .drawing: return "pencil.tip"
+        case .painting: return "paintbrush"
+        case .music: return "music.note"
+        case .crafting: return "scissors"
+        case .consistency: return "checkmark.seal"
+        case .discipline: return "shield"
+        case .resilience: return "arrow.clockwise"
+        case .curiosity: return "questionmark.circle"
+        case .creativity: return "sparkles"
+        }
+    }
+
+    var shortDescription: String {
+        switch self {
+        case .reading: return "Books are portals. Read with purpose and return wiser."
+        case .writing: return "Words sharpen thought. Put them to the page."
+        case .research: return "Seek the hidden thread; study until the map is yours."
+        case .deepWork: return "Silence the noise and forge your focus."
+        case .meditation: return "Breathe. Stillness is a skill, not a mood."
+        case .weightlifting: return "Raise iron, build will, earn your strength."
+        case .cardio: return "Keep the heart’s drumbeat steady and bold."
+        case .walking: return "A humble stride can carry mighty change."
+        case .sleep: return "Rest is the forge where power is renewed."
+        case .yoga: return "Balance and breath bend you toward calm."
+        case .surfing: return "Ride the edge of the wave and learn its timing."
+        case .basketball: return "Feet, hands, and heart in one swift rhythm."
+        case .swimming: return "Water yields to the patient and the strong."
+        case .sauna: return "Heat tempers; endure and emerge steadier."
+        case .iceBaths: return "Cold reveals resolve. Hold fast."
+        case .woodworking: return "Shape raw timber into something that lasts."
+        case .pottery: return "Spin the wheel and shape the earth’s patience."
+        case .cooking: return "Turn simple into sustaining with flame and care."
+        case .coding: return "Craft logic into tools that move the world."
+        case .drawing: return "Learn to see, then let your hand speak."
+        case .painting: return "Color is memory; lay it down boldly."
+        case .music: return "Practice until silence becomes song."
+        case .crafting: return "Make with your hands; make it real."
+        case .consistency: return "Small steps, many days, a steadfast path."
+        case .discipline: return "When comfort calls, choose the climb."
+        case .resilience: return "Fall, rise, and count the rising."
+        case .curiosity: return "Follow the question; it always knows the way."
+        case .creativity: return "Hobby sparks kindle this flame."
+        }
+    }
+
+    var trackingDescription: String {
+        if category == .meta {
+            return "Auto-tracked based on related skills."
+        }
+        if isTimeBased {
+            if self == .sleep {
+                return "Time-based. Log minutes slept."
+            }
+            return "Time-based. Log minutes spent."
+        }
+        return "Session-based. Log each completed session."
+    }
+
+    var motivationalQuip: String {
+        switch self {
+        case .reading: return "Turn another page, adventurer."
+        case .writing: return "Leave ink where doubt once stood."
+        case .research: return "Truth favors the persistent."
+        case .deepWork: return "Guard your focus like a treasure."
+        case .meditation: return "The mind obeys a practiced breath."
+        case .weightlifting: return "Strength is earned, rep by rep."
+        case .cardio: return "Keep the pace; the miles add up."
+        case .walking: return "One step can start a quest."
+        case .sleep: return "Rest well; tomorrow needs you."
+        case .yoga: return "Find the line between effort and ease."
+        case .surfing: return "Wait for the wave, then commit."
+        case .basketball: return "Play the moment, not the doubt."
+        case .swimming: return "Glide, breathe, repeat."
+        case .sauna: return "Stay with the heat."
+        case .iceBaths: return "Cold now, calm later."
+        case .woodworking: return "Measure twice, carve once."
+        case .pottery: return "Let the clay teach patience."
+        case .cooking: return "Stoke the fire; feed the future."
+        case .coding: return "Ship the idea, then refine it."
+        case .drawing: return "A line today becomes art tomorrow."
+        case .painting: return "Color speaks when words do not."
+        case .music: return "Practice until the note rings true."
+        case .crafting: return "Make something that was not."
+        case .consistency: return "Return again; that is the path."
+        case .discipline: return "Choose the hard thing, then do it."
+        case .resilience: return "You are the comeback."
+        case .curiosity: return "Ask one more question."
+        case .creativity: return "Play often; wonder follows."
+        }
+    }
+
+    var isLoggable: Bool {
+        category != .meta
     }
 }
 
@@ -213,6 +328,7 @@ enum XpEventType: String, Codable {
     case discipline
     case resilience
     case curiosity
+    case creativity
     case manualAdjust
 }
 
@@ -327,6 +443,9 @@ enum GameRules {
 
     // Curiosity reward
     static let curiosityXpReward: Int = 200
+
+    // Creativity reward from hobby activities (fraction of base XP).
+    static let creativityHobbyXpMultiplier: Double = 0.2
 
     // Streak multiplier (hard capped)
     static func streakMultiplier(streakDays: Int) -> Double {

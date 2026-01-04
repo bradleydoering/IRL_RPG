@@ -117,6 +117,9 @@ Applies to **base XP only**:
 - Daily quest: +200 skill XP +75 Consistency
 - Weekly quest: template-specific bonuses (flat; no multipliers)
 
+### Meta skill bonuses
+- Creativity: award **20% of base XP** from Hobby skill sessions (no streak multiplier).
+
 ### Level curve
 Total XP needed:
 - TotalXP(L) = 120 * L^2.2
@@ -163,6 +166,13 @@ On session for skill K:
 - if K has never been trained before → +200 Curiosity
 - else if lastUsedDate[K] <= d-30 → +200 Curiosity
 Update lastUsedDate[K] = d
+
+---
+
+## Creativity Detection
+When logging a **Hobby** skill:
+- award Creativity XP = 20% of **base XP**
+- write an `XpEvent` of type `creativity`
 
 ---
 

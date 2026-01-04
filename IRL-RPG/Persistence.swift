@@ -37,7 +37,7 @@ struct PersistenceController {
                  * The device is out of space.
                  * The store could not be migrated to the current model version.
                  Check the error message to determine what the actual problem was.
-                 */
+                */
                 fatalError("Unresolved error \(error), \(error.userInfo)")
             }
         })
@@ -46,14 +46,13 @@ struct PersistenceController {
 
     func seedSkillsIfNeeded(context: NSManagedObjectContext) {
         let request = NSFetchRequest<Skill>(entityName: "Skill")
-        request.fetchLimit = 1
 
         do {
-            let existing = try context.count(for: request)
-            if existing > 0 { return }
-
+            let existing = try context.fetch(request)
+            let existingKinds = Set(existing.compactMap { $0.kindRaw })
             let now = Date()
-            for kind in SkillKind.allCases {
+
+            for kind in SkillKind.allCases where !existingKinds.contains(kind.rawValue) {
                 let skill = Skill(context: context)
                 skill.id = UUID()
                 skill.kindRaw = kind.rawValue
@@ -66,7 +65,16 @@ struct PersistenceController {
                 skill.updatedAt = now
             }
 
-            try context.save()
+            for skill in existing where (skill.categoryRaw == nil || skill.categoryRaw?.isEmpty == true) {
+                if let kindRaw = skill.kindRaw, let kind = SkillKind(rawValue: kindRaw) {
+                    skill.categoryRaw = kind.category.rawValue
+                    skill.updatedAt = now
+                }
+            }
+
+            if context.hasChanges {
+                try context.save()
+            }
         } catch {
             let nsError = error as NSError
             fatalError("Unresolved error \(nsError), \(nsError.userInfo)")

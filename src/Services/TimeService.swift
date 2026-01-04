@@ -43,10 +43,10 @@ struct TimeService {
         calendar.startOfDay(for: date(for: localDay))
     }
 
-    func addDays(_ localDay: LocalDay, days: Int) -> LocalDay {
-        let base = date(for: localDay)
+    func addDays(_ day: LocalDay, days: Int) -> LocalDay {
+        let base = date(for: day)
         let next = calendar.date(byAdding: .day, value: days, to: base) ?? base
-        return localDay(for: next)
+        return self.localDay(for: next)
     }
 
     func daysBetween(_ start: LocalDay, _ end: LocalDay) -> Int {
@@ -56,11 +56,11 @@ struct TimeService {
         return comps.day ?? 0
     }
 
-    func weekStart(for localDay: LocalDay) -> LocalDay {
-        let dateValue = date(for: localDay)
+    func weekStart(for day: LocalDay) -> LocalDay {
+        let dateValue = date(for: day)
         let weekday = calendar.component(.weekday, from: dateValue)
         let delta = (weekday - calendar.firstWeekday + 7) % 7
         let startDate = calendar.date(byAdding: .day, value: -delta, to: dateValue) ?? dateValue
-        return localDay(for: startDate)
+        return self.localDay(for: startDate)
     }
 }

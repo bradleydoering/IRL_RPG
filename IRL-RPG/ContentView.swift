@@ -7,54 +7,42 @@
 
 import SwiftUI
 import CoreData
+import UIKit
 
 struct ContentView: View {
     @Environment(\.managedObjectContext) private var viewContext
 
     @FetchRequest(
-        sortDescriptors: [
-            NSSortDescriptor(key: "categoryRaw", ascending: true),
-            NSSortDescriptor(key: "kindRaw", ascending: true)
-        ],
+        sortDescriptors: [NSSortDescriptor(key: "kindRaw", ascending: true)],
         animation: .default)
     private var skills: FetchedResults<Skill>
-
-    private let timeService = TimeService()
-    private let streakService = StreakService()
+    
+    private let columns = Array(repeating: GridItem(.flexible(), spacing: 14), count: 3)
 
     var body: some View {
         NavigationView {
-            List {
-                ForEach(SkillCategory.allCases, id: \.self) { category in
-                    let categorySkills = skills.filter { $0.category == category }
-                    if !categorySkills.isEmpty {
-                        Section(category.displayName) {
-                            ForEach(categorySkills) { skill in
-                                HStack {
-                                    VStack(alignment: .leading, spacing: 4) {
-                                        Text(skill.displayName)
-                                            .font(AppFont.custom(18, weight: .semibold))
-                                        Text(skill.levelSubtitle)
-                                            .font(AppFont.custom(13))
-                                            .foregroundColor(.secondary)
-                                    }
-                                    Spacer()
-                                    Button("Log") {
-                                        logQuickSession(for: skill)
-                                    }
-                                    .buttonStyle(.borderedProminent)
-                                }
+            ScrollView {
+                if orderedSkills.isEmpty {
+                    VStack(spacing: 12) {
+                        Text("Loading skills...")
+                            .font(AppFont.custom(16, weight: .semibold))
+                            .foregroundColor(.secondary)
+                        ProgressView()
+                    }
+                    .frame(maxWidth: .infinity, minHeight: 200)
+                    .padding()
+                } else {
+                    LazyVGrid(columns: columns, spacing: 12) {
+                        ForEach(orderedSkills) { skill in
+                            NavigationLink {
+                                SkillDetailView(skill: skill)
+                            } label: {
+                                SkillCard(skill: skill)
                             }
+                            .buttonStyle(.plain)
                         }
                     }
-                }
-            }
-            .navigationTitle("Skills")
-            .toolbar {
-                ToolbarItem {
-                    Button("Seed Skills") {
-                        PersistenceController.shared.seedSkillsIfNeeded(context: viewContext)
-                    }
+                    .padding()
                 }
             }
             .onAppear {
@@ -63,59 +51,79 @@ struct ContentView: View {
         }
     }
 
-    private func logQuickSession(for skill: Skill) {
-        guard let kind = skill.skillKind else { return }
-        let now = Date()
-        let trainedDay = timeService.localDay(for: now)
-        let lastTrainedDay = skill.lastTrainedAt.map { timeService.localDay(for: $0) }
+    private var orderedSkills: [Skill] {
+        let map: [String: Skill] = Dictionary(uniqueKeysWithValues: skills.compactMap { skill in
+            guard let raw = skill.kindRaw else { return nil }
+            return (raw, skill)
+        })
+        return SkillKind.allCases.compactMap { map[$0.rawValue] }
+    }
+}
 
-        let update = streakService.updateStreak(
-            lastTrainedDay: lastTrainedDay,
-            currentStreakDays: Int(skill.currentStreakDays),
-            longestStreakDays: Int(skill.longestStreakDays),
-            trainedDay: trainedDay
-        )
+private struct SkillCard: View {
+    let skill: Skill
 
-        let minutes = kind.isTimeBased ? 30 : 0
-        let baseXp = XPService.baseXp(skill: kind, minutes: minutes, sessions: 1)
-        let breakdown = XPService.breakdown(baseXp: baseXp,
-                                            streakDays: update.currentStreakDays,
-                                            bonusXp: 0)
+    var body: some View {
+        GeometryReader { proxy in
+            let leftWidth = proxy.size.width * 0.5
+            let rightWidth = proxy.size.width * 0.5
 
-        withAnimation {
-            skill.xpTotal += Int64(breakdown.totalXp)
-            skill.currentStreakDays = Int16(update.currentStreakDays)
-            skill.longestStreakDays = Int16(update.longestStreakDays)
-            skill.lastTrainedAt = timeService.startOfDay(for: trainedDay)
-            skill.updatedAt = now
+            HStack(spacing: 0) {
+                if let uiImage = UIImage(named: skill.assetName) {
+                    Image(uiImage: uiImage)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: leftWidth, height: proxy.size.height, alignment: .leading)
+                        .clipped()
+                } else {
+                    Image(systemName: skill.iconName)
+                        .font(.system(size: min(leftWidth, proxy.size.height) * 0.6))
+                        .foregroundColor(Color(red: 0.85, green: 0.83, blue: 0.78))
+                        .frame(width: leftWidth, height: proxy.size.height, alignment: .leading)
+                        .clipped()
+                }
 
-            let log = SessionLogEntity(context: viewContext)
-            log.id = UUID()
-            log.skillKindRaw = kind.rawValue
-            log.durationSeconds = Int64(minutes * 60)
-            log.baseXp = Int64(baseXp)
-            log.streakMultiplier = breakdown.streakMultiplier
-            log.bonusXp = 0
-            log.totalXp = Int64(breakdown.totalXp)
-            log.trainedDespiteResistance = false
-            log.sourceRaw = SessionSource.manual.rawValue
-            log.createdAt = now
-
-            let event = XpEventEntity(context: viewContext)
-            event.id = UUID()
-            event.at = now
-            event.skillKindRaw = kind.rawValue
-            event.typeRaw = XpEventType.base.rawValue
-            event.amount = Int64(breakdown.totalXp)
-            event.note = update.isSameDay ? "Same-day session" : nil
-
-            do {
-                try viewContext.save()
-            } catch {
-                let nsError = error as NSError
-                fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
+                HStack(spacing: 3) {
+                    Text("\(skill.levelValue)")
+                        .foregroundColor(Color(red: 0.98, green: 0.90, blue: 0.35))
+                    Text("/")
+                        .foregroundColor(.black)
+                    Text("99")
+                        .foregroundColor(Color(red: 0.98, green: 0.90, blue: 0.35))
+                }
+                .font(AppFont.custom(20, weight: .semibold))
+                .frame(width: rightWidth, height: proxy.size.height, alignment: .center)
             }
         }
+        .frame(maxWidth: .infinity, minHeight: 84)
+        .background(
+            CutCornerRectangle(cornerSize: 6)
+                .fill(Color(red: 0.35, green: 0.33, blue: 0.30))
+        )
+        .overlay(
+            CutCornerRectangle(cornerSize: 6)
+                .stroke(Color(red: 0.20, green: 0.19, blue: 0.17), lineWidth: 2)
+        )
+        .shadow(color: Color.black.opacity(0.35), radius: 2, x: 0, y: 1)
+    }
+}
+
+private struct CutCornerRectangle: Shape {
+    let cornerSize: CGFloat
+
+    func path(in rect: CGRect) -> Path {
+        let c = min(cornerSize, min(rect.width, rect.height) / 2)
+        var path = Path()
+        path.move(to: CGPoint(x: rect.minX + c, y: rect.minY))
+        path.addLine(to: CGPoint(x: rect.maxX - c, y: rect.minY))
+        path.addLine(to: CGPoint(x: rect.maxX, y: rect.minY + c))
+        path.addLine(to: CGPoint(x: rect.maxX, y: rect.maxY - c))
+        path.addLine(to: CGPoint(x: rect.maxX - c, y: rect.maxY))
+        path.addLine(to: CGPoint(x: rect.minX + c, y: rect.maxY))
+        path.addLine(to: CGPoint(x: rect.minX, y: rect.maxY - c))
+        path.addLine(to: CGPoint(x: rect.minX, y: rect.minY + c))
+        path.closeSubpath()
+        return path
     }
 }
 

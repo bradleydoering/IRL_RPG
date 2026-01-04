@@ -12,42 +12,45 @@ An iOS, local-first “skills RPG” where habits are treated like trainable ski
 
 ---
 
-## Skill List (Locked v1)
+## Skill List (v2)
 
 ### Mind
 1. Reading
 2. Writing
-3. Learning
+3. Research
 4. Deep Work
 5. Meditation
-6. Creativity
 
 ### Body
-7. Weightlifting
-8. Running (bundles cardio)
-9. Walking
-10. Mobility
-11. Sleep
+6. Weightlifting
+7. Cardio
+8. Walking
+9. Sleep
+10. Yoga
+11. Surfing
+12. Basketball
+13. Swimming
+14. Sauna
+15. Ice Baths
 
-### Craft
-12. Woodworking
-13. Pottery
-14. Cooking
-15. DIY / Home Improvement
-16. Electronics / Making
-
-### Art
-17. Drawing / Painting
-18. Music Practice
-19. Photography / Video
+### Hobby
+16. Woodworking
+17. Pottery
+18. Cooking
+19. Coding
+20. Drawing
+21. Painting
+22. Music
+23. Crafting
 
 ### Meta (Auto-Leveled)
-20. Consistency
-21. Discipline
-22. Resilience
-23. Curiosity
+24. Consistency
+25. Discipline
+26. Resilience
+27. Curiosity
+28. Creativity (from Hobby activities)
 
-Total: **23 skills**.
+Total: **28 skills**.
 
 ---
 
